@@ -89,21 +89,33 @@ namespace Math
 
 		// -- operators -- //
 	public:
+		vec2& operator=(const vec2 &V)
+		{
+			x = V.x;
+			y = V.y;
+			return *this;
+		}
+		vec2& operator=(vec2&& V)
+		{
+			x = V.x;
+			y = V.y;
+			return *this;
+		}
 		vec2 operator+(const vec2 &V) const
 		{
 			return vec2(this->x + V.x, this->y + V.y);
 		}
 		vec2 operator-(const vec2 &V) const
 		{
-			return vec3(this->x - V.x, this->y - V.y);
+			return vec2(this->x - V.x, this->y - V.y);
 		}
 		vec2 operator*(T scalar) const
 		{
-			return vec3(this->x * scalar, this->y * scalar);
+			return vec2(this->x * scalar, this->y * scalar);
 		}
 		vec2 operator/(T scalar) const
 		{
-			return vec3(this->x / scalar, this->y / scalar);
+			return vec2(this->x / scalar, this->y / scalar);
 		}
 		vec2& operator+=(const vec2 &V)
 		{
@@ -127,18 +139,6 @@ namespace Math
 		{
 			this->x /= scalar;
 			this->y /= scalar;
-			return *this;
-		}
-		vec2& operator=(const vec2 &V)
-		{
-			x = V.x;
-			y = V.y;
-			return *this;
-		}
-		vec2& operator=(vec2&& V)
-		{
-			x = V.x;
-			y = V.y;
 			return *this;
 		}
 

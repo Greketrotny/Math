@@ -3,25 +3,23 @@
 
 namespace Math
 {
-	template <class T> class Matrix
+	template <class T> class matrix
 	{
-		// -- fields -- //
 	private:
 		typedef unsigned int uint;
-		unsigned int rows, columns;
+		size_t rows, columns;
 		T *storage = nullptr;
 		T default_value;
 
 
-		// -- constructors -- //
 	public:
-		Matrix(const Matrix<T>& M)
+		matrix(const matrix<T>& M)
 			:rows(M.rows), columns(M.columns), default_value(M.default_value)
 		{
 			storage = new T[rows * columns];
 			*this = M;
 		}
-		Matrix(Matrix<T>&& M)
+		matrix(matrix<T>&& M)
 			: rows(M.rows), columns(M.columns), default_value(M.default_value)
 		{
 			storage = M.storage;
@@ -30,7 +28,7 @@ namespace Math
 			M.rows = 0;
 			M.columns = 0;
 		}
-		Matrix(unsigned int rows, unsigned int columns, T default_value = (T)0.0)
+		matrix(unsigned int rows, unsigned int columns, T default_value = (T)0.0)
 		{
 			if (rows < 1) rows = 1;
 			if (columns < 1) columns = 1;
@@ -48,7 +46,7 @@ namespace Math
 				}
 			}
 		}
-		~Matrix()
+		~matrix()
 		{
 			delete[] storage;
 		}
@@ -56,12 +54,12 @@ namespace Math
 
 		// -- operators -- //
 	public:
-		Matrix<T> operator+(const Matrix<T>& M)
+		matrix<T> operator+(const matrix<T>& M)
 		{
 			if ((rows == M.rows) && (columns == M.columns))
 			{
 				// create result matrix
-				Matrix<T> Result(rows, columns, default_value);
+				matrix<T> Result(rows, columns, default_value);
 
 				// add values
 				for (unsigned int i = 0; i < rows; i++)
@@ -75,12 +73,12 @@ namespace Math
 			}
 			return *this;
 		}
-		Matrix<T> operator-(const Matrix<T>& M)
+		matrix<T> operator-(const matrix<T>& M)
 		{
 			if ((rows == M.rows) && (columns == M.columns))
 			{
 				// create result matrix
-				Matrix<T> Result(rows, columns, default_value);
+				matrix<T> Result(rows, columns, default_value);
 
 				// add values
 				for (unsigned int i = 0; i < rows; i++)
@@ -94,11 +92,11 @@ namespace Math
 			}
 			return *this;
 		}
-		Matrix<T> operator*(const Matrix<T>& M)
+		matrix<T> operator*(const matrix<T>& M)
 		{
 			if (columns == M.rows)
 			{
-				Matrix<T> Result(rows, M.columns, default_value);
+				matrix<T> Result(rows, M.columns, default_value);
 
 				// multiplication
 				T sum = (T)0.0;
@@ -118,9 +116,9 @@ namespace Math
 			}
 			return *this;
 		}
-		Matrix<T> operator*(T scalar)
+		matrix<T> operator*(T scalar)
 		{
-			Matrix Result(rows, columns, default_value);
+			matrix Result(rows, columns, default_value);
 
 			// multiplication
 			for (unsigned int i = 0; i < rows; i++)
@@ -132,12 +130,12 @@ namespace Math
 			}
 			return Result;
 		}
-		Matrix<T> operator/(T scalar)
+		matrix<T> operator/(T scalar)
 		{
 			if (scalar == 0.0)
 				return *this;
 
-			Matrix<T> Result(rows, columns, default_value);
+			matrix<T> Result(rows, columns, default_value);
 
 			// legal division
 			for (unsigned int i = 0; i < rows; i++)
@@ -150,7 +148,7 @@ namespace Math
 
 			return Result;
 		}
-		Matrix<T>& operator+=(const Matrix<T>& M)
+		matrix<T>& operator+=(const matrix<T>& M)
 		{
 			if ((rows == M.rows) && (columns == M.columns))
 			{
@@ -164,7 +162,7 @@ namespace Math
 			}
 			return *this;
 		}
-		Matrix<T>& operator-=(const Matrix<T>& M)
+		matrix<T>& operator-=(const matrix<T>& M)
 		{
 			if ((rows == M.rows) && (columns == M.columns))
 			{
@@ -178,12 +176,12 @@ namespace Math
 			}
 			return *this;
 		}
-		Matrix<T>& operator*=(const Matrix<T>& M)
+		matrix<T>& operator*=(const matrix<T>& M)
 		{
 			if (columns == M.rows)
 			{
 				// create result matrix
-				Matrix<T> Result(rows, M.columns, default_value);
+				matrix<T> Result(rows, M.columns, default_value);
 
 				// do multiplication to result matrix
 				T sum = (T)0.0;
@@ -212,7 +210,7 @@ namespace Math
 			}
 			return *this;
 		}
-		Matrix<T>& operator*=(T scalar)
+		matrix<T>& operator*=(T scalar)
 		{
 			// multiplication
 			for (unsigned int i = 0; i < rows; i++)
@@ -224,7 +222,7 @@ namespace Math
 			}
 			return *this;
 		}
-		Matrix<T>& operator/=(T scalar)
+		matrix<T>& operator/=(T scalar)
 		{
 			if (scalar == 0.0)
 				return *this;
@@ -240,7 +238,7 @@ namespace Math
 
 			return *this;
 		}
-		Matrix<T>& operator=(const Matrix<T>& M)
+		matrix<T>& operator=(const matrix<T>& M)
 		{
 			// when selfassignment
 			if (&M == this)
@@ -270,7 +268,7 @@ namespace Math
 			// return updated *this
 			return *this;
 		}
-		Matrix<T>& operator=(Matrix<T>&& M)
+		matrix<T>& operator=(matrix<T>&& M)
 		{
 			// check selfassignment
 			if (&M == this)
@@ -298,24 +296,24 @@ namespace Math
 
 		// -- static functions -- //
 	public:
-		static Matrix<T> Add(const Matrix<T>& M1, const Matrix<T>& M2)
+		static matrix<T> Add(const matrix<T>& M1, const matrix<T>& M2)
 		{
-			Matrix<T> Result = M1;
+			matrix<T> Result = M1;
 			Result += M2;
 			return Result;
 		}
-		static Matrix<T> Substract(const Matrix<T>& M1, const Matrix<T>& M2)
+		static matrix<T> Substract(const matrix<T>& M1, const matrix<T>& M2)
 		{
-			Matrix<T> Result = M1;
+			matrix<T> Result = M1;
 			Result -= M2;
 			return Result;
 		}
-		static Matrix<T> DotProduct(const Matrix<T>& M1, const Matrix<T>& M2)
+		static matrix<T> DotProduct(const matrix<T>& M1, const matrix<T>& M2)
 		{
 			if ((M1.columns == M2.rows))
 			{
 				// create result matrix
-				Matrix<T> Result(M1.rows, M2.columns, M1.default_value);
+				matrix<T> Result(M1.rows, M2.columns, M1.default_value);
 
 				// do multiplication
 				T sum = (T)0u;
@@ -337,11 +335,11 @@ namespace Math
 			}
 			return M1;
 		}
-		static Matrix<T> HadamardProduct(const Matrix<T>& M1, const Matrix<T>& M2)
+		static matrix<T> HadamardProduct(const matrix<T>& M1, const matrix<T>& M2)
 		{
 			if (M1.rows == M2.rows && M1.columns == M2.columns)
 			{
-				Matrix<T> Result(M1.rows, M1.columns, M1.default_value);
+				matrix<T> Result(M1.rows, M1.columns, M1.default_value);
 
 				for (unsigned int i = 0; i < M1.rows; i++)
 				{
@@ -359,19 +357,19 @@ namespace Math
 
 		// -- methods -- //
 	public:
-		void Add(const Matrix<T>& M)
+		void Add(const matrix<T>& M)
 		{
 			*this += M;
 		}
-		void Substract(const Matrix<T>& M)
+		void Substract(const matrix<T>& M)
 		{
 			*this -= M;
 		}
-		void DotProduct(const Matrix<T>& M)
+		void DotProduct(const matrix<T>& M)
 		{
-			*this = Matrix::DotProduct(*this, M);
+			*this = matrix::DotProduct(*this, M);
 		}
-		void HadamardProduct(const Matrix<T>& M)
+		void HadamardProduct(const matrix<T>& M)
 		{
 			if (this->rows == M.rows && this->columns == M.columns)
 			{

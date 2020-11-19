@@ -1,18 +1,17 @@
 #ifndef VEC3_H
 #define VEC3_H
 
-#include <math.h>	// sqrt(), sin(), cos()
+#include <math.h>	// sqrt(), sinf(), cosf()
+#include <stdint.h>
 
 namespace Math
 {
 	template <typename T> struct vec3
 	{
-		// -- fields -- //
 	public:
 		T x, y, z;
 
 	public:
-		// -- constructors -- //
 		vec3()
 			:x(0.0f),
 			y(0.0f),
@@ -25,7 +24,7 @@ namespace Math
 			z(V.z)
 		{
 		}
-		vec3(vec3 &&V)
+		vec3(vec3 &&V) noexcept
 			:x(V.x),
 			y(V.y),
 			z(V.z)
@@ -42,7 +41,6 @@ namespace Math
 		}
 
 
-		// -- static functions -- //
 	public:
 		static T DotProduct(const vec3 &V1, const vec3 &V2)
 		{
@@ -65,9 +63,21 @@ namespace Math
 		{
 			return (V1 - V2).Magnitude();
 		}
+		static vec3 Normalize(const vec3& v)
+		{
+			vec3 norm = v;
+			norm.Normalize();
+			return norm;
+		}
+		static vec3 Reverse(const vec3& v)
+		{
+			return vec3(
+				-v.x,
+				-v.y,
+				-v.z);
+		}
 
 
-		// -- non-static functions -- //
 	public:
 		T DotProduct(const vec3 &V)
 		{
@@ -102,32 +112,53 @@ namespace Math
 		}
 		void RotateX(T angle)
 		{
-			T newY = y * cos(angle) + z * sin(angle);
-			z = y * -sin(angle) + z * cos(angle);
+			T newY = y * cosf(angle) + z * sinf(angle);
+			z = y * -sinf(angle) + z * cosf(angle);
 			y = newY;
 		}
 		void RotateY(T angle)
 		{
-			T newX = x * cos(angle) + z * -sin(angle);
-			z = x * sin(angle) + z * cos(angle);
+			T newX = x * cosf(angle) + z * -sinf(angle);
+			z = x * sinf(angle) + z * cosf(angle);
 			x = newX;
 		}
 		void RotateZ(T angle)
 		{
-			T newX = x * cos(angle) + y * sin(angle);
-			y = x * -sin(angle) + y * cos(angle);
+			T newX = x * cosf(angle) + y * sinf(angle);
+			y = x * -sinf(angle) + y * cosf(angle);
 			x = newX;
 		}
-		void Rotate(T rotationX, T rotationY, T rotationZ)
+		void RotateXYZ(T rotationX, T rotationY, T rotationZ)
 		{
 			RotateX(rotationX);
 			RotateY(rotationY);
 			RotateZ(rotationZ);
 		}
+		void RotateXYZ(const vec3& rot)
+		{
+			RotateX(rot.x);
+			RotateY(rot.y);
+			RotateZ(rot.z);
+		}
+		void RotateZYX(T rotationX, T rotationY, T rotationZ)
+		{
+			RotateZ(rotationZ);
+			RotateY(rotationY);
+			RotateX(rotationX);
+		}
+		void RotateZYX(const vec3& rot)
+		{
+			RotateZ(rot.z);
+			RotateY(rot.y);
+			RotateX(rot.x);
+		}
 		
 
-		// -- operators -- //
 	public:
+		vec3 operator-() const
+		{
+			return vec3(-this->x, -this->y, -this->z);
+		}
 		vec3 operator+(const vec3 &V) const
 		{
 			return vec3(this->x + V.x, this->y + V.y, this->z + V.z);
@@ -140,9 +171,17 @@ namespace Math
 		{
 			return vec3(this->x * scalar, this->y * scalar, this->z * scalar);
 		}
+		vec3 operator*(const vec3& scalar) const
+		{
+			return vec3(this->x * scalar.x, this->y * scalar.y, this->z * scalar.z);
+		}
 		vec3 operator/(T scalar) const
 		{
 			return vec3(this->x / scalar, this->y / scalar, this->z / scalar);
+		}
+		vec3 operator/(const vec3& scalar) const
+		{
+			return vec3(this->x / scalar.x, this->y / scalar.y, this->z / scalar.z);
 		}
 		vec3& operator+=(const vec3 &V)
 		{
@@ -165,11 +204,25 @@ namespace Math
 			this->z *= scalar;
 			return *this;
 		}
+		vec3& operator*=(const vec3& scalar)
+		{
+			this->x *= scalar.x;
+			this->y *= scalar.y;
+			this->z *= scalar.z;
+			return *this;
+		}
 		vec3& operator/=(T scalar)
 		{
 			this->x /= scalar;
 			this->y /= scalar;
 			this->z /= scalar;
+			return *this;
+		}
+		vec3& operator/=(const vec3& scalar)
+		{
+			this->x /= scalar.x;
+			this->y /= scalar.y;
+			this->z /= scalar.z;
 			return *this;
 		}
 		vec3& operator=(const vec3 &V)
@@ -179,7 +232,7 @@ namespace Math
 			z = V.z;
 			return *this;
 		}
-		vec3& operator=(vec3&& V)
+		vec3& operator=(vec3&& V) noexcept
 		{
 			x = V.x;
 			y = V.y;
@@ -188,9 +241,8 @@ namespace Math
 		}
 
 
-		// -- getters and setters -- //
 	public:
-		void SetValues(T x, T y, T z)
+		void Set(T x, T y, T z)
 		{
 			this->x = x;
 			this->y = y;
@@ -201,6 +253,11 @@ namespace Math
 			return (T)sqrt(x * x + y * y + z * z);
 		}
 	};
+
+	typedef vec3<float> vec3f;
+	typedef vec3<double> vec3d;
+	typedef vec3<int32_t> vec3i32;
+	typedef vec3<uint32_t> vec3ui32;
 }
 
 #endif // !VEC3_H
