@@ -6,18 +6,26 @@
 #include "angle.h"
 
 
+struct MyStruct
+{
+	int i;
+};
+
 
 using namespace Math;
 
 int main()
 {
-	angle<rad> a(constants<float>::pi / 2.0f);
-	angle<deg> b(120.0f);
-	angle<rev> c(0.75f);
+	//MyStruct s;
+	//int i = (int)s;
 
-	angle<rad> result = c + a + b;
 
-	std::cout << "Sinus " << result.value() << " rad = " << sinf(result.value());
+	angle<Math::angle_unit::deg, float> d = 90.0_degf;
+
+	angle<Math::angle_unit::rad, float> r;
+	r = d;
+
+	std::cout << r.value();
 
 	std::cin.get();
 

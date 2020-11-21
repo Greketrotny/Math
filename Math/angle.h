@@ -7,7 +7,7 @@
 namespace Math
 {
 	// angle units
-	enum AngleUnit { rad, deg, rev };
+	enum class angle_unit { rad, deg, rev };
 	
 	// base angle class with aritmetic
 	template <typename derived_angle, typename T = float> struct base_angle
@@ -17,7 +17,9 @@ namespace Math
 
 
 	public:
-		base_angle() = default;
+		constexpr base_angle(const T& value)
+			: m_value{ value }
+		{}
 
 		
 	public:
@@ -111,72 +113,75 @@ namespace Math
 			return m_value;
 		}
 	};
-	template <AngleUnit U = AngleUnit::rad, typename T = float> struct angle : public base_angle<angle<U, T>, T> {};
+	
+	template <angle_unit U = angle_unit::rad, typename T = float> 
+	struct angle;
 
 	// angle class instances per angle type
-	template <typename T> struct angle<AngleUnit::rad, T> : public base_angle<angle<AngleUnit::rad, T>, T>
+	template <typename T> 
+	struct angle<angle_unit::rad, T> : public base_angle<angle<angle_unit::rad, T>, T>
 	{
 	public:
-		angle(const T& value = static_cast<T>(0.0))
-		{
-			this->m_value = value;
-		}
-		angle(const angle<rad, T>& angle)
-		{
-			this->m_value = angle.m_value;
-		}
+		constexpr angle(const T& value = static_cast<T>(0.0))
+			: base_angle<angle<angle_unit::rad, T>, T>(value)
+		{}
+		angle(const angle<angle_unit::rad, T>& other)
+			: base_angle<angle<angle_unit::rad, T>, T>(other)
+		{}
+		angle(const angle<angle_unit::deg, T>& other)
+			: base_angle<angle<angle_unit::rad, T>, T>(other.value() * constants<T>::pi / static_cast<T>(180.0))
+		{}
+		angle(const angle<angle_unit::rev, T>& other)
+			: base_angle<angle<angle_unit::rad, T>, T>(other.value()* constants<T>::tau)
+		{}
+	};
+	template <typename T> 
+	struct angle<angle_unit::deg, T> : public base_angle<angle<angle_unit::deg, T>, T>
+	{
+	public:
+		constexpr angle(const T& value = static_cast<T>(0.0))
+			: base_angle<angle<angle_unit::deg, T>, T>(value)
+		{}		
+		angle(const angle<angle_unit::deg, T>& other)
+			: base_angle<angle<angle_unit::deg, T>, T>(other.value())
+		{}		
+		angle(const angle<angle_unit::rad, T>& other)
+			: base_angle<angle<angle_unit::deg, T>, T>(other.value()* static_cast<T>(180.0) / constants<T>::Pi)
+		{}
+		angle(const angle<angle_unit::rev, T>& other)
+			: base_angle<angle<angle_unit::deg, T>, T>(other.value()* static_cast<T>(360.0))
+		{}
+	};
+	template <typename T> 
+	struct angle<angle_unit::rev, T> : public base_angle<angle<angle_unit::rev, T>, T>
+	{
+	public:
+		constexpr angle(const T& value = static_cast<T>(0.0))
+			: base_angle<angle<angle_unit::rev, T>, T>(value)
+		{}
+		angle(const angle<angle_unit::rev, T>& other)
+			: base_angle<angle<angle_unit::rev, T>, T>(other.value())
+		{}
+		angle(const angle<angle_unit::rad, T>& other)
+			: base_angle<angle<angle_unit::rev, T>, T>(other.value() / constants<T>::tau)
+		{}
+		angle(const angle<angle_unit::deg, T>& other)
+			: base_angle<angle<angle_unit::rev, T>, T>(other.value() / static_cast<T>(360.0))
+		{}
+	};
 
-		angle(const angle<deg, T>& angle)
-		{
-			this->m_value = angle.value() * constants<T>::pi / static_cast<T>(180.0);
-		}
-		angle(const angle<rev, T>& angle)
-		{
-			this->m_value = angle.value() * constants<T>::tau;
-		}
-	};
-	template <typename T> struct angle<AngleUnit::deg, T> : public base_angle<angle<AngleUnit::deg, T>, T>
+	constexpr angle<angle_unit::rad, float> operator"" _radf(long double value)
 	{
-	public:
-		angle(const T& value = static_cast<T>(0.0))
-		{
-			this->m_value = value;
-		}		
-		angle(const angle<deg, T>& angle)
-		{
-			this->m_value = angle.m_value;
-		}
-		
-		angle(const angle<rad, T>& angle)
-		{
-			this->m_value = angle.value() * static_cast<T>(180.0) / constants<T>::Pi;
-		}
-		angle(const angle<rev, T>& angle)
-		{
-			this->m_value = angle.value() * static_cast<T>(360.0);
-		}
-	};
-	template <typename T> struct angle<AngleUnit::rev, T> : public base_angle<angle<AngleUnit::rev, T>, T>
+		return angle<angle_unit::rad, float>(value);
+	}
+	constexpr angle<angle_unit::deg, float> operator"" _degf(long double value)
 	{
-	public:
-		angle(const T& value = static_cast<T>(0.0))
-		{
-			this->m_value = value;
-		}
-		angle(const angle<rev, T>& angle)
-		{
-			this->m_value = angle.m_value;
-		}
-
-		angle(const angle<rad, T>& angle)
-		{
-			this->m_value = angle.value() / constants<T>::tau;
-		}
-		angle(const angle<deg, T>& angle)
-		{
-			this->m_value = angle.value() / static_cast<T>(360.0);
-		}
-	};
+		return angle<angle_unit::deg, float>(value);
+	}
+	constexpr angle<angle_unit::rev, float> operator"" _revf(long double value)
+	{
+		return angle<angle_unit::rev, float>(value);
+	}
 }
 
 #endif // !ANGLE_H
