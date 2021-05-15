@@ -52,7 +52,6 @@ namespace Math
 		}
 
 
-		// -- operators -- //
 	public:
 		matrix<T> operator+(const matrix<T>& M)
 		{
@@ -294,7 +293,6 @@ namespace Math
 			return storage[row * columns + column];
 		}
 
-		// -- static functions -- //
 	public:
 		static matrix<T> Add(const matrix<T>& M1, const matrix<T>& M2)
 		{
@@ -355,7 +353,6 @@ namespace Math
 		}
 
 
-		// -- methods -- //
 	public:
 		void Add(const matrix<T>& M)
 		{
@@ -429,7 +426,6 @@ namespace Math
 		}
 
 
-		// -- getters and setters -- //
 	public:
 		T& Value(unsigned int row, unsigned int column)
 		{

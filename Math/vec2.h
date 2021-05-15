@@ -7,38 +7,29 @@ namespace Math
 {
 	template <typename T> struct vec2
 	{
-		// -- fields -- //
 	public:
 		T x, y;
 
 	public:
-		// -- constructors -- //
 		vec2()
 			:x(0.0f),
 			y(0.0f)
-		{
-		}
+		{}
 		vec2(const vec2 &V)
 			:x(V.x),
 			y(V.y)
-		{
-		}
+		{}
 		vec2(vec2 &&V)
 			:x(V.x),
 			y(V.y)
-		{
-		}
+		{}
 		vec2(T x, T y)
 		{
 			this->x = x;
 			this->y = y;
 		}
-		~vec2()
-		{
-		}
 
 
-		// -- static functions -- //
 	public:
 		static T DotProduct(const vec2 &V1, const vec2 &V2)
 		{
@@ -54,7 +45,6 @@ namespace Math
 		}
 
 
-		// -- non-static functions -- //
 	public:
 		T DotProduct(const vec2 &V)
 		{
@@ -87,7 +77,6 @@ namespace Math
 		}
 
 
-		// -- operators -- //
 	public:
 		vec2& operator=(const vec2 &V)
 		{
@@ -143,7 +132,6 @@ namespace Math
 		}
 
 
-		// -- getters and setters -- //
 	public:
 		void SetValues(T x, T y)
 		{

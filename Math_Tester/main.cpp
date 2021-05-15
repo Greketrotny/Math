@@ -2,33 +2,25 @@
 #include <chrono>
 
 #include "vec3.h"
-#include "Constants.h"
+#include "constants.h"
 #include "angle.h"
-
-
-struct MyStruct
-{
-	int i;
-};
-
 
 using namespace Math;
 
+void PrintVec(const Math::vec3f& v)
+{
+	std::cout << "[" << v.x << ", " << v.y << ", " << v.z << "]" << std::endl;
+}
+
 int main()
 {
-	//MyStruct s;
-	//int i = (int)s;
-
-
-	angle<Math::angle_unit::deg, float> d = 90.0_degf;
-
-	angle<Math::angle_unit::rad, float> r;
-	r = d;
-
-	std::cout << r.value();
+	vec3f a(1.0f, 0.0f, 4.0f);
+	vec3f b(1.0f, 0.0f, 4.0f);
+	PrintVec(a);
+	PrintVec(b);
+	std::cout << (a != b);
 
 	std::cin.get();
 
-	getchar();
 	return 0;
 }
